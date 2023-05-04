@@ -1,0 +1,45 @@
+name: Deploy to Apache2
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: "us-east-1"
+  AWS_ACCOUNT_ID: "984303072552"
+  SSH_USERNAME: "ubuntu"
+  SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+  SERVER_IP: "3.91.249.122"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to AWS ECR
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        region: ${{ env.AWS_REGION }}
+        registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+
+    - name: Build and push Docker image to ECR
+      run: |
+        docker build -t my-apache2 .
+        docker tag my-apache2:latest ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/my-apache2:latest
+        docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/my-apache2:latest
+
+    - name: Deploy to Apache2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.SERVER_IP }}
+        username: ${{ env.SSH_USERNAME }}
+        password: ${{ env.SSH_PASSWORD }}
+        script: |
+          sudo docker stop apache2
+          sudo docker rm apache2
+          sudo docker run -d --name apache2 -p 80:80 ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/my-apache2:latest
