@@ -20,13 +20,15 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Login to AWS ECR
+      
+    - name: Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1
       with:
-        region: ${{ env.AWS_REGION }}
-        registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-
+        registry: my-ecr-registry.example.com
+        registry-type: 'registry-alias'
+        username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    
     - name: Build and push Docker image to ECR
       run: |
         docker build -t my-apache2 .
