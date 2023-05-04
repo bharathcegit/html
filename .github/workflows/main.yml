@@ -21,13 +21,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       
-    - name: Login to Amazon ECR
+    - name: Login to AWS ECR
       uses: aws-actions/amazon-ecr-login@v1
       with:
-        registry: my-ecr-registry.example.com
-        registry-type: 'registry-alias'
-        username: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        region: ${{ env.AWS_REGION }}
+        registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
     
     - name: Build and push Docker image to ECR
       run: |
