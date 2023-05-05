@@ -33,6 +33,8 @@ jobs:
         docker tag html:latest 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
         docker push 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
     - name: Pull the latest image from ECR
+      env:
+        ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
       run: |
         echo +++++++++++++++++++++++++++
         echo $ECR_REGISTRY
