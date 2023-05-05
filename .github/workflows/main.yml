@@ -40,15 +40,13 @@ jobs:
         HOSTNAME: ${{secrets.HOST}}
         USER_NAME: ${secrets.USER}
   
-        script: |
-            # Pull the latest Docker image from ECR
-            docker pull 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
-
-            # Stop and remove the existing container
-            docker stop html-container || true
-            docker rm html-container || true
-
-            # Run the new container with the updated image
-            docker run -d --name html-container -p 80:80 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
+      run: |
+        # Pull the latest Docker image from ECR
+        docker pull 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
+        # Stop and remove the existing container
+        docker stop html-container || true
+        docker rm html-container || true
+        # Run the new container with the updated image
+        docker run -d --name html-container -p 80:80 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
 
         
