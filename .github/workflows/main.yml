@@ -40,15 +40,15 @@ jobs:
         HOSTNAME: ${{secrets.HOST}}
         USER_NAME: ${secrets.USER}
       run: |
-        echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
-        ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
+        ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ${USER}@${HOST} 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 984303072552.dkr.ecr.us-east-1.amazonaws.com'
+        ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ${USER}@${HOST} 'docker pull 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest'
   
         # Pull the latest Docker image from ECR
-        docker pull 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
+        #docker pull 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
         # Stop and remove the existing container
-        docker stop html-container || true
-        docker rm html-container || true
+        #docker stop html-container || true
+        #docker rm html-container || true
         # Run the new container with the updated image
-        docker run -d --name html-container -p 80:80 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
+        #docker run -d --name html-container -p 80:80 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
 
         
