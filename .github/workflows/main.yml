@@ -27,10 +27,10 @@ jobs:
         ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
       run: |
         # Build the Docker image
-        docker build -t my-apache2 .
+        docker build -t .
         # Push the Docker image to ECR
-        docker tag my-apache2:latest ${ECR_REGISTRY}/my-apache2:latest
-        docker push ${ECR_REGISTRY}/my-apache2:latest
+        docker tag html:latest 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
+        docker push 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
 
     
         
