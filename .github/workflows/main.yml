@@ -10,7 +10,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: "us-east-1"
   AWS_ACCOUNT_ID: "984303072552"
-  HOST: "3.80.222.98"
+  HOST: ${{ secrets.HOST }}
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
 jobs:
@@ -31,13 +31,3 @@ jobs:
         docker tag my-apache2:latest ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/my-apache2:latest
         docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/my-apache2:latest
         
-    - name: Deploy to Apache2
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ env.HOST }}
-        username: "ubuntu"
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          sudo docker stop apache2 || true
-          sudo docker rm apache2 || true
-          sudo docker run -d --name apache2 -p 80:80 ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/my-apache2:latest
