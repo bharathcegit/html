@@ -39,10 +39,21 @@ jobs:
         PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         HOSTNAME: ${{secrets.HOST}}
         USER_NAME: ${secrets.USER}
+        
+    - uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          # Pull the latest Docker image from ECR
+          docker pull 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
 
-      run: |
-        echo Hello
-        #echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
-        #ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
+          # Stop and remove the existing container
+          docker stop html-container || true
+          docker rm html-container || true
+
+          # Run the new container with the updated image
+          docker run -d --name html-container -p 80:80 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
 
         
