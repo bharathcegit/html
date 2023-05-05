@@ -10,7 +10,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: "us-east-1"
   AWS_ACCOUNT_ID: "984303072552"
-  HOST: "3.80.222.98"
+  HOST: "3.91.249.122"
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
 jobs:
@@ -23,9 +23,8 @@ jobs:
     - name: Login to AWS ECR
       uses: aws-actions/amazon-ecr-login@v1
       with:
-        region: ${{ env.AWS_REGION }}
         registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-    
+        
     - name: Build and push Docker image to ECR
       run: |
         docker build -t my-apache2 .
