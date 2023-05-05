@@ -32,25 +32,16 @@ jobs:
         # Push the Docker image to ECR
         docker tag html:latest 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
         docker push 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
-    - name: Pull the latest image from ECR
-      env:
-        ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-      run: |
-        echo +++++++++++++++++++++++++++
-        echo $ECR_REGISTRY
-        echo #########################
-        # Log in to the ECR registry
-        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 984303072552.dkr.ecr.us-east-1.amazonaws.com
-        # Pull the latest image from ECR
-        docker pull ${ECR_REGISTRY}/html:latest
-    - name: Deploy the latest image to Apache2
-      env:
-        ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-      run: |
-        # Copy the latest image to the application server
-        scp -i ${SSH_PRIVATE_KEY} ${ECR_REGISTRY}/html:latest ${HOST}:~
-        # SSH into the application server and run the latest image
-        ssh -i ${SSH_PRIVATE_KEY} ${HOST} "docker stop html; docker rm html; docker run -d --name my-apache2 -p 80:80 ${ECR_REGISTRY}/html:latest"
+        steps:
+            - uses: actions/checkout@v2 
+            - name: Build & Deploy
+              env:
+                  PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+                  HOSTNAME: ${{secrets.SSH_HOST}}
+                  USER_NAME: ${secrets.USER_NAME}
 
-    
+              run: |
+                echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+                ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+
         
