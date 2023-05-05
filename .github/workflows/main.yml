@@ -27,10 +27,6 @@ jobs:
       env:
         ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
       run: |
-        echo +++++++++++++++++++++++++++
-        echo $ECR_REGISTRY
-        echo #########################
-
         # Build the Docker image
         docker build -t html .
         # Push the Docker image to ECR
@@ -38,6 +34,9 @@ jobs:
         docker push 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
     - name: Pull the latest image from ECR
       run: |
+        echo +++++++++++++++++++++++++++
+        echo $ECR_REGISTRY
+        echo #########################
         # Log in to the ECR registry
         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 984303072552.dkr.ecr.us-east-1.amazonaws.com
         # Pull the latest image from ECR
