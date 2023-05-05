@@ -20,18 +20,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Login to AWS ECR
-      uses: aws-actions/amazon-ecr-login@v1
-      with:
-        registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-
+      run: |
+        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 984303072552.dkr.ecr.us-east-1.amazonaws.com
     - name: Build and push Docker image to ECR
       env:
         ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
       run: |
         # Build the Docker image
         docker build -t my-apache2 .
-        # Log in to the ECR registry
-        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
         # Push the Docker image to ECR
         docker tag my-apache2:latest ${ECR_REGISTRY}/my-apache2:latest
         docker push ${ECR_REGISTRY}/my-apache2:latest
