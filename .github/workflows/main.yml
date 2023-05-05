@@ -39,8 +39,10 @@ jobs:
         PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         HOSTNAME: ${{secrets.HOST}}
         USER_NAME: ${secrets.USER}
-  
       run: |
+        echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
+        ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
+  
         # Pull the latest Docker image from ECR
         docker pull 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
         # Stop and remove the existing container
