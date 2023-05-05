@@ -32,16 +32,16 @@ jobs:
         # Push the Docker image to ECR
         docker tag html:latest 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
         docker push 984303072552.dkr.ecr.us-east-1.amazonaws.com/html:latest
-        steps:
-            - uses: actions/checkout@v2 
-            - name: Build & Deploy
-              env:
-                  PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-                  HOSTNAME: ${{secrets.SSH_HOST}}
-                  USER_NAME: ${secrets.USER_NAME}
+           
+    - uses: actions/checkout@v2 
+    - name: Build & Deploy
+      env:
+        PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        HOSTNAME: ${{secrets.HOST}}
+        USER_NAME: ${secrets.USER}
 
-              run: |
-                echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-                ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+      run: |
+        echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
+        ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
 
         
