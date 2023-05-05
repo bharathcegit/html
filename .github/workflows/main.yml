@@ -42,6 +42,8 @@ jobs:
         # Pull the latest image from ECR
         docker pull ${ECR_REGISTRY}/html:latest
     - name: Deploy the latest image to Apache2
+      env:
+        ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
       run: |
         # Copy the latest image to the application server
         scp -i ${SSH_PRIVATE_KEY} ${ECR_REGISTRY}/html:latest ${HOST}:~
